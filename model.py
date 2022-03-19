@@ -67,35 +67,62 @@ tensorboard_callback = tf.keras.callbacks.TensorBoard(
 
 history = model.fit(train_data,validation_data=vali_data,epochs=10,callbacks=tensorboard_callback)
 
-#dir_path='C:/Users/Admin/Desktop/FR Dataset/test/test1.jpg'
-#img = image.load_img(dir_path , target_size=(244,244,3))
-#x = image.img_to_array(img)
-#X = np.expand_dims(x, axis=0)
-#images = np.vstack([X])
+from keras.preprocessing.image import load_img,img_to_array
+image = load_img('C:/Users/Admin/Desktop/FR Dataset/test/test2.jpg', target_size = (height,width))
+image = img_to_array(image)/255.0
+image = np.expand_dims(image , axis=0)
+images = np.vstack([image])
 
-#predicted_batch = model.predict(images)
-#predicted_id = tf.math.argmax(predicted_batch, axis=-1)
-#predicted_label = classes[predicted_id]
-#print(predicted_batch)
-#print(predicted_id)
-#print(predicted_label)
+predicted_batch = model.predict(images)
+predicted_id = tf.math.argmax(predicted_batch, axis=-1)
+predicted_label = classes[predicted_id]
+print(predicted_label)
+#Predicting the image trainned for a single class need to improve it for multiple class
+#Delete the comments after changing the part
 
 
 sample = cv2.imread("C:/Users/JASWANTH/OneDrive/Desktop/FR Dataset/test/d03.jpg")
 classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 boxes = classifier.detectMultiScale(sample, 1.3, 3)
 
-flag=0
 
 for box in boxes:
     x, y, width, height = box
     x2, y2 = x + width, y + height
     cv2.rectangle(sample, (x, y), (x2, y2), (0, 0, 255), 1)
-    
-    flag+=1
 
 cv2.imshow('Face Recognition', sample)
 cv2.waitKey(0)
 
-for i in range(classes):
-    print(i)
+import xlwt
+from xlwt import Workbook
+import numpy as np
+
+name_list=np.array(['jennie','jisoo', 'lisa', 'rose'])
+
+
+
+wb=Workbook()
+style = xlwt.easyxf('font: bold 1')
+sheet = wb.add_sheet('Day 1')
+
+
+j=1
+sheet.write(0,0,'Sl.No',style)
+sheet.write(0,1,'Members',style)
+sheet.write(0,2,'P/A',style)
+for i in range(len(classes)):
+    sheet.write(j,0,i) #sno
+    j+=1
+i=0
+while(i<4):
+    if(classes[i]==name_list[i]):
+        sheet.write(i+1,1,classes[i])
+        sheet.write(i+1,2,'P')
+        i+=1
+    else:
+        sheet.write(i+1,1,classes[i])
+        sheet.write(i+1,2,'A')
+        i+=1
+
+wb.save('Attendance_Sheet.xls')
