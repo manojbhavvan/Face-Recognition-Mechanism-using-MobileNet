@@ -4,7 +4,6 @@ import cv2 #for image operations like viewing,editing
 import os #for path alignment
 import datetime # for inputing date and time of the image uploaded
 import time
-
 import tensorflow as tf #basic backend for model
 import tensorflow_hub as hub #for third-party model download purposes
 from tensorflow.keras.layers import Dense, Flatten #layer definitions
